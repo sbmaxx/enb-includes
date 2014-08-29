@@ -1,0 +1,19 @@
+{
+  "name": "enb-includes",
+  "version": "0.0.1",
+  "description": "enb-includes",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sbmaxx/enb-includes.git"
+  },
+  "author": "sbmaxx <sbmaxx@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sbmaxx/enb-includes/issues"
+  },
+  "homepage": "https://github.com/sbmaxx/enb-includes"
+}
