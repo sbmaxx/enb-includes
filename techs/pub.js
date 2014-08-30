@@ -14,7 +14,7 @@ module.exports = require('enb/lib/build-flow').create()
 
         // получаем список клиентских BEMHTML файлов, которые подготовлены специальным таргетом
         // список всех BEMHTML файлов в сборке — node.requireSource(['common.files'])...`
-        return node.requireSources([this.node.unmaskTargetName('?.bemhtml.files')]).spread(function(files) {
+        return node.requireSources([node.unmaskTargetName('?.bemhtml.files')]).spread(function(files) {
             return files.bySuffix.bemhtml;
         }).then(function(bemhtmlSourceFiles) {
 
@@ -31,7 +31,7 @@ module.exports = require('enb/lib/build-flow').create()
                 utils.jsInclude(node.relativePath(bemhtmlFileName))
             ].join('\n'), 'BEMHTML'));
 
-            // client/server JS
+            // JS
             output.push(utils.wrap(sourceFiles.map(function(file) {
                 return utils.jsInclude(node.relativePath(file.fullname));
             }).join('\n'), 'JS'));

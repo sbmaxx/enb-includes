@@ -9,7 +9,16 @@ module.exports = require('enb/lib/build-flow').create()
     .builder(function(langFilenames, bemhtmlFilename, sourceFiles) {
 
         var node = this.node,
-            split = utils.splitSources(sourceFiles);
+            sources = utils.splitSources(sourceFiles);
+
+        sources.bemhtml = sources.bemhtml.map(function(file) {
+            // только комментарии со списком файлов, используемых в компиляции BEMHTML
+            return utils.comment(node.relativePath(file.fullname));
+        });
+
+        sources.js = sources.js.map(function(file) {
+            return utils.jsInclude(node.relativePath(file.fullname));
+        });
 
         // в конце будет строка
         var output = [];
@@ -23,19 +32,16 @@ module.exports = require('enb/lib/build-flow').create()
         output.push('if (typeof exports !== "undefined" && typeof blocks !== "undefined") { exports.blocks = blocks; }');
 
         // BEMHTML includes + compiled
-        output.push(utils.wrap([
-            // только комментарии со списком файлов, используемых в компиляции BEMHTML
-            split.bemhtml.map(function(file) {
-                return utils.comment(node.relativePath(file.fullname));
-            }).join('\n'),
-            // подключаем один скомпилированный файл
-            utils.jsInclude(node.relativePath(bemhtmlFilename))
-        ].join('\n'), 'BEMHTML'));
+        output.push(
+            utils.wrap([
+                sources.bemhtml.join('\n'),
+                utils.jsInclude(node.relativePath(bemhtmlFilename))
+            ].join('\n'),
+            'BEMHTML')
+        );
 
         // server JS
-        output.push(utils.wrap(split.js.map(function(file) {
-            return utils.jsInclude(node.relativePath(file.fullname));
-        }).join('\n'), 'PRIV'));
+        output.push(utils.wrap(sources.js.join('\n'), 'PRIV'));
 
         // в конце файла должен быть перевод строки!
         return output.join('\n') + '\n';
